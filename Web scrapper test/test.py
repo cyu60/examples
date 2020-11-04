@@ -24,20 +24,29 @@ headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KH
 
 # This one does not get the actual transactions for the site
 reg_url = "https://etherscan.io/token/0xaf9f549774ecedbd0966c52f250acc548d3f36e5?a=0xe8f063c4dc60b2f6c2c900d870ddcdae7daab7f6"
-req = Request(url=reg_url, headers=headers) 
+# req = Request(url=reg_url, headers=headers) 
 # html = urlopen(req).read() 
 # soup = BeautifulSoup(html, "lxml")
 
-# This one doesn't work -- doesn't ge the info we need
+# This one doesn't work -- doesn't get the info we need -- just need to try more!! (SHOULD BE THE WAY)
 options = Options()
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
-driver = webdriver.Chrome(chrome_options=options)
+# options.add_argument('--headless')
+# options.add_argument('--disable-gpu')
+driver = webdriver.Chrome(options=options)
 driver.get(reg_url) ## has to be url directly?
-time.sleep(3)
+time.sleep(100) # Can adjust the length of sleep?
 page = driver.page_source
 driver.quit()
-soup = BeautifulSoup(page, 'html.parser')
+soup = BeautifulSoup(page, 'lxml')
+
+div1 = soup.find_all('div', attrs={'id': 'maindiv'})
+print("div: ", div1)
+
+div2 = soup.find_all('div', attrs={'class': 'table-responsive mb-2 mb-md-0'})
+print("div: ", div2)
+
+table = soup.find_all('table', attrs={'class': 'table table-md-text-normal table-hover mb-4'})
+print("table: ", table)
 
 
 title = soup.title
@@ -47,10 +56,14 @@ print(title.text)
 # for link in links:
 #     print(link.get("href"))
 
-print(soup)
+# print(soup)
 
 # col_header = soup.find_all('th')
 # print(col_header)
+
+# test = soup.find_all('input', attrs={
+#     'type':'hidden'})
+# print(test)
 
 data = []
 allrows = soup.find_all("tr")

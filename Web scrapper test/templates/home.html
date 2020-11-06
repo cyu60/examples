@@ -1,0 +1,89 @@
+<!doctype html>
+
+{% extends "layout.html" %}
+{% block content %}
+    <table class='table table-hover table-responsive table-sm'>
+        <thead>
+            <tr>
+                <th scope="col">Hash</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.hash }}</td>
+                <td>{{ transaction.from }}</td>
+                <td>{{ transaction.to }}</td>
+                <td>{{ transaction.value }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+{% endblock content %}
+{% block form %}
+    <h3>Input information</h3>
+    <p class='text-muted'>Please enter the information.
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{ form.threshold_value.label(class="form-control-label") }}
+    
+                {% if form.threshold_value.errors %}
+                {{ form.threshold_value(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.threshold_value.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.threshold_value(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.time_ago.label(class="form-control-label") }}
+                {% if form.time_ago.errors %}
+                {{ form.time_ago(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.time_ago.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.time_ago(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</p>
+{% endblock form %}
+<!--
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-light">Latest Posts</li>
+                    <li class="list-group-item list-group-item-light">Announcements</li>
+                    <li class="list-group-item list-group-item-light">Calendars</li>
+                    <li class="list-group-item list-group-item-light">etc</li>
+                </ul>
+    <h1>{{ transaction.hash }}</h1>
+<p>{{transaction.from}} to {{transaction.to}}</p>
+<p>{{transaction.value}}</p>
+                <tr>
+                    <td>Name</td>
+                    <td>Side</td>
+                    <td>Role</td>
+                </tr>
+            <tr>
+                <td>Obi Wan Kenobi</td>
+                <td>Light</td>
+                <td>Jedi</td>
+            </tr>
+            <tr>
+                <td>Greedo</td>
+                <td>South</td>
+                <td>Scumbag</td>
+            </tr> -->

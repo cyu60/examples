@@ -2,6 +2,9 @@ import requests
 import pandas as pd
 import time
 from datetime import datetime, timedelta
+import clean_transactions
+from matplot import plot_histogram
+
 
 apikey = "C8WN32SD2E8C71KGTANNBZFDVJFM5KQGNM"
 contract_address = "0xaf9f549774ecedbd0966c52f250acc548d3f36e5"
@@ -66,15 +69,30 @@ def get_transfer_events(start_block, value_threshold):
     return df2
 
 
+
 if __name__ == '__main__':
     # Get user input
-    value_threshold = int(input("Enter the value threshold: "))
-    hours_ago_input = int(input("Enter the number of hours ago: "))
-    min_ago_input = int(input("Enter the number of min ago: "))
+    # value_threshold = int(input("Enter the value threshold: "))
+    # hours_ago_input = int(input("Enter the number of hours ago: "))
+    # min_ago_input = int(input("Enter the number of min ago: "))
+    
+    # For tests
+    value_threshold = 5000
+    hours_ago_input = 72
+    min_ago_input = 0
+
     start_block = get_start_block(hours_ago_input, min_ago_input)
-    df2 = get_transfer_events(start_block, value_threshold)
-    print(df2)
-    df2.to_csv('filter_data.cvs')
+    df = get_transfer_events(start_block, value_threshold)
+    df1 = clean_transactions.clean_df(df)
+    # df2 = clean_transactions.url_df(df)
+    # df2 = clean_transactions.display_df(df)
+    # print(df2.iloc[0])
+    print(df1)
+    # print(df.iloc[0])
+    # df.to_csv('filter_data.cvs')
+    hist = plot_histogram(df1)
+    # hist.show()
+
 
 # print(df1)
 # print(df.head())

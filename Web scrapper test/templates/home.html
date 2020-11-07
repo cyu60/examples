@@ -2,6 +2,9 @@
 
 {% extends "layout.html" %}
 {% block content %}
+    {% if fig_exist %}
+        <img src="{{ url_for('fig') }}" alt="data" class="img-fluid" alt="Responsive image">  
+    {% endif %}
     <table class='table table-hover table-responsive table-sm'>
         <thead>
             <tr>
@@ -13,9 +16,9 @@
         </thead>
         {% for transaction in transactions %}
             <tr>
-                <td>{{ transaction.hash }}</td>
-                <td>{{ transaction.from }}</td>
-                <td>{{ transaction.to }}</td>
+                <td><a href="{{ url_for('go_to_etherscan', data=transaction.hash, col='hash' ) }}">{{ transaction.hash_display }}</a></td>
+                <td><a href="{{ url_for('go_to_etherscan', data=transaction.from, col='from' ) }}">{{ transaction.from_display }}</a></td>
+                <td><a href="{{ url_for('go_to_etherscan', data=transaction.to, col='to' ) }}">{{ transaction.to_display }}</a></td>
                 <td>{{ transaction.value }}</td>
             </tr>
         {% endfor %}
@@ -23,7 +26,7 @@
     
 {% endblock content %}
 {% block form %}
-    <h3>Input information</h3>
+    <h3>Whale Tracker</h3>
     <p class='text-muted'>Please enter the information.
     <form method="POST" action="">
         {{ form.hidden_tag() }}

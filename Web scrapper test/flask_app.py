@@ -1,33 +1,24 @@
 from flask import Flask, render_template, url_for, flash, redirect, Response
 from forms import UserInputForm
-# from flask_sqlalchemy import SQLAlchemy
 import os
 import useAPI
 import clean_transactions
+from url_builder import build_url
 
 import io
 from matplot import plot_histogram
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from transactions import Transactions
 
 app = Flask(__name__)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-# db = SQLAlchemy(app)
-
-# class UserInput(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     threshold_value = db.Column(db.Integer(20), nullable=False)
-#     time_ago = db.Column(db.Integer(20), nullable=False)
-
-#     def __repr__(self):
-#         return f"User('{self.threshold_value}', '{self.time_ago}')"
 
 
+# Need to declare this out here?
+transactions = Transactions()
 
-transactions = []
-full_transactions = []
-fig = ''
+
 # # sample data
 #     {
 #         'hash': 'dummy hash',
@@ -42,45 +33,20 @@ fig = ''
 #         'value': '200',
 #     }
 # ]
-def update_transactions(form):
-    threshold_value = form.threshold_value.data
-    time_ago = form.time_ago.data
-    start_block = useAPI.get_start_block(
-        time_ago, 0)  # haven't incoperated mins yet
-    df = useAPI.get_transfer_events(start_block, threshold_value)
-    # update transactions 
-    display_df = clean_transactions.display_df(df)
-    transactions.clear()
-    transactions.extend(display_df.to_dict('records'))
-    # return matplot
-    global fig
-    fig = plot_histogram(df)
-    # return fig
-
-
-BASE_URL = "https://etherscan.io/"
-CONTRACT = "0xaf9f549774ecedbd0966c52f250acc548d3f36e5"
-req_address = "?a="
-
-def build_url(data, col):
-    if col == 'hash':
-        return BASE_URL + 'tx/' + data
-    else: 
-        return BASE_URL + 'token/' + CONTRACT + req_address + data
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
 def home():
     form = UserInputForm()
-    fig_exist = False
+    display = False
     if form.validate_on_submit():
-        update_transactions(form)
-        fig_exist = True
-    return render_template('home.html', transactions=transactions, fig_exist=fig_exist, form=form)
+        transactions.update_transactions(form)
+        display = True
+    return render_template('home.html', transactions=transactions, display=display, form=form)
 
 @app.route('/fig')
 def fig():
-    # fig = create_figure()
+    fig = transactions.fig
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
@@ -98,4 +64,4 @@ def about():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

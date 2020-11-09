@@ -20,7 +20,6 @@ def truncate_strings_for_display(df, columns):
 def sort_value(df):
     return df.sort_values(by=['value'], ascending=False)
 
-
 def clean_df(df):
     columns = ['hash', 'from', 'to']
     df = truncate_strings_for_display(df, columns)
@@ -36,6 +35,9 @@ def add_url_df(df):
     df1['to_url'] = BASE_URL + 'token/' + CONTRACT + req_address + df1['to'].astype(str) 
     # df1.drop(columns=['hash', 'from', 'to'], inplace=True)
     return df1
+
+def adjust_sig_fig(df, col, num_fig):
+    df[col] = df[col].astype(float) / (10 ** num_fig)
 
 def display_df(df):
     df1 = add_url_df(df)

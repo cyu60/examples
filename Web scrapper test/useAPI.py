@@ -57,7 +57,7 @@ def get_transfer_events(start_block, value_threshold):
     result = address_content.get("result")
 
     df = pd.DataFrame(result)
-    print(df.iloc[0])
+    # print(df.iloc[0])
     tokenDecimal = 18
 
     df1 = df[['hash', 'from', 'to', 'value']]
@@ -77,8 +77,8 @@ if __name__ == '__main__':
     # min_ago_input = int(input("Enter the number of min ago: "))
     
     # For tests
-    value_threshold = 5000
-    hours_ago_input = 72
+    value_threshold = 1000
+    hours_ago_input = 3
     min_ago_input = 0
 
     start_block = get_start_block(hours_ago_input, min_ago_input)

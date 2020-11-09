@@ -2,27 +2,35 @@
 
 {% extends "layout.html" %}
 {% block content %}
-    {% if fig_exist %}
+    {% if display %}
+        {% if not transactions.is_empty() %}
         <img src="{{ url_for('fig') }}" alt="data" class="img-fluid" alt="Responsive image">  
-    {% endif %}
-    <table class='table table-hover table-responsive table-sm'>
-        <thead>
-            <tr>
-                <th scope="col">Hash</th>
-                <th scope="col">From</th>
-                <th scope="col">To</th>
-                <th scope="col">Value</th>
-            </tr>
-        </thead>
-        {% for transaction in transactions %}
+            <table class='table table-hover table-responsive table-sm'>
+                <thead>
+                    <tr>
+                        <th scope="col">Hash</th>
+                        <th scope="col">From</th>
+                        <th scope="col">To</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+            {% for transaction in transactions.transactions_data %}
             <tr>
                 <td><a href="{{ url_for('go_to_etherscan', data=transaction.hash, col='hash' ) }}">{{ transaction.hash_display }}</a></td>
                 <td><a href="{{ url_for('go_to_etherscan', data=transaction.from, col='from' ) }}">{{ transaction.from_display }}</a></td>
                 <td><a href="{{ url_for('go_to_etherscan', data=transaction.to, col='to' ) }}">{{ transaction.to_display }}</a></td>
                 <td>{{ transaction.value }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <h1>No Data Found...</h1>
+            <p>... Please try a different duration or minimum number of tokens.</p>
+        {% endif %}    
+    {% else %}
+    <h1>No Input Yet...</h1>
+    <p>... Or server is currently overloaded, please wait a few seconds before submitting get transactions again.</p>
+    {% endif %}
     
 {% endblock content %}
 {% block form %}
@@ -65,28 +73,3 @@
     </form>
 </p>
 {% endblock form %}
-<!--
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-light">Latest Posts</li>
-                    <li class="list-group-item list-group-item-light">Announcements</li>
-                    <li class="list-group-item list-group-item-light">Calendars</li>
-                    <li class="list-group-item list-group-item-light">etc</li>
-                </ul>
-    <h1>{{ transaction.hash }}</h1>
-<p>{{transaction.from}} to {{transaction.to}}</p>
-<p>{{transaction.value}}</p>
-                <tr>
-                    <td>Name</td>
-                    <td>Side</td>
-                    <td>Role</td>
-                </tr>
-            <tr>
-                <td>Obi Wan Kenobi</td>
-                <td>Light</td>
-                <td>Jedi</td>
-            </tr>
-            <tr>
-                <td>Greedo</td>
-                <td>South</td>
-                <td>Scumbag</td>
-            </tr> -->
